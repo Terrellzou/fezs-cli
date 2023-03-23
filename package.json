@@ -1,0 +1,28 @@
+{
+  "name": "fe-cli",
+  "version": "1.0.0",
+  "description": "fe-cli",
+  "main": "index.js",
+  "scripts": {
+    "test": "fe-cli"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Terrellzou/fe-cli.git"
+  },
+  "keywords": [
+    "脚手架"
+  ],
+  "author": "Shay",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Terrellzou/fe-cli/issues"
+  },
+  "homepage": "https://github.com/Terrellzou/fe-cli#readme",
+  "bin": "cli.js",
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "inquirer": "^9.1.5"
+  }
+}
