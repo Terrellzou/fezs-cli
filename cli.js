@@ -1,7 +1,8 @@
 #! /usr/bin/env node
 
-import inquirer from "inquirer";
-import chalk from "chalk";
+const inquirer = require("inquirer");
+const chalk = require("chalk");
+const Create = require("./create");
 
 const questions = [
   {
@@ -30,7 +31,11 @@ const questions = [
     ],
   },
 ];
-inquirer.prompt(questions).then((answers) => {
-  console.log(answers);
-  console.log("开始创建属于你的脚手架吧！");
-});
+inquirer
+  .prompt(questions)
+  .then((answers) => {
+    Create(answers);
+  })
+  .catch((e) => {
+    console.log(e);
+  });
