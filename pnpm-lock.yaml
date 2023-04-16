@@ -7,6 +7,7 @@ specifiers:
   download-git-repo: ^3.0.2
   figlet: ^1.6.0
   inquirer: ^8.0.0
+  ora: ^5.4.0
 
 dependencies:
   chalk: 4.1.2
@@ -15,6 +16,7 @@ dependencies:
   download-git-repo: 3.0.2
   figlet: 1.6.0
   inquirer: 8.2.5
+  ora: 5.4.0
 
 packages:
 
@@ -736,6 +738,21 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       mimic-fn: 2.1.0
+    dev: false
+
+  /ora/5.4.0:
+    resolution: {integrity: sha512-1StwyXQGoU6gdjYkyVcqOLnVlbKj+6yPNNOxJVgpt9t4eksKjiriiHuxktLYkgllwk+D6MbC4ihH84L1udRXPg==}
+    engines: {node: '>=10'}
+    dependencies:
+      bl: 4.1.0
+      chalk: 4.1.2
+      cli-cursor: 3.1.0
+      cli-spinners: 2.8.0
+      is-interactive: 1.0.0
+      is-unicode-supported: 0.1.0
+      log-symbols: 4.1.0
+      strip-ansi: 6.0.1
+      wcwidth: 1.0.1
     dev: false
 
   /ora/5.4.1:
