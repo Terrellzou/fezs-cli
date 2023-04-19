@@ -67,7 +67,6 @@ module.exports = function (name, options) {
     inquirer
       .prompt(questions)
       .then((answers) => {
-        console.log(answers);
         const { buildTool, variant } = answers;
         const buildToolMap = {
           1: "webpack",
@@ -81,37 +80,24 @@ module.exports = function (name, options) {
         copyFile(copyPath[variant], name).then(() => {
           // 创建构建工具，默认是（vite)
           // 定义需要按照的依赖
-          const baseDependencies = ["react", buildToolMap[buildTool]];
-          const child = spawn("pnpm", ["install", "-D"].concat(baseDependencies), {
-            stdio: "inherit",
-          });
-          // 监听执行结果
-          child.on("close", function (code) {
-            // 执行失败
-            if (code !== 0) {
-              console.log(
-                chalk.red("Error occurred while installing dependencies!")
-              );
-              process.exit(1);
-            }
-          });
+          // const baseDependencies = ["react", buildToolMap[buildTool]];
+          
+          // const npm = process.platform === 'win32' ? 'npm.cwd' : 'npm'
+          // const child = spawn(npm, ["install", "-D"].concat(baseDependencies), {
+          //   stdio: "inherit",
+          //   cwd: 'demo'
+          // });
+          // // 监听执行结果
+          // child.on("close", function (code) {
+          //   // 执行失败
+          //   if (code !== 0) {
+          //     console.log(
+          //       chalk.red("Error occurred while installing dependencies!")
+          //     );
+          //     process.exit(1);
+          //   }
+          // });
         });
-
-        // promise.then(() => {
-        //   const child = spawn("pnpm", ["install"].concat(baseDependencies), {
-        //     stdio: "inherit",
-        //   });
-        //   // 监听执行结果
-        //   child.on("close", function (code) {
-        //     // 执行失败
-        //     if (code !== 0) {
-        //       console.log(
-        //         chalk.red("Error occurred while installing dependencies!")
-        //       );
-        //       process.exit(1);
-        //     }
-        //   });
-        // });
       })
       .catch((e) => {
         console.log(e);
