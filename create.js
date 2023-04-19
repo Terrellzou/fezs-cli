@@ -1,62 +1,36 @@
 const path = require("path");
 const fs = require("fs");
 const inquirer = require("inquirer");
+// 命令行美化工具
 const chalk = require("chalk");
-const download = require("download-git-repo");
+const fsEx = require("fs-extra");
+// loading动效
 const ora = require("ora");
-const { resolve } = require("path");
+// 跨平台shell工具
+const spawn = require("cross-spawn");
 
-module.exports = async function (name, options) {
+module.exports = function (name, options) {
   const cwd = process.cwd();
   // 创建项目的地址
   const targetFile = path.join(cwd, name);
 
-  const isExist = (path) => {
-    // 判断文件夹是否存在, 不存在创建一个
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(path);
+  const copyFile = async (sourPath, targetPath) => {
+    // 复制模板
+    const message = "loading template";
+    const spinner = ora(message);
+    spinner.start();
+
+    try {
+      await fsEx.copy(
+        path.join(__dirname, sourPath),
+        path.join(__dirname, targetPath)
+      );
+      spinner.stop();
+      spinner.succeed("down template succeed");
+    } catch (error) {
+      spinner.stop();
     }
   };
-
-  const copyFile = (sourcePath, targetPath) => {
-    return new Promise(() => {
-      const sourceFile = fs.readdirSync(sourcePath, { withFileTypes: true });
-
-      sourceFile.forEach((file) => {
-        const newSourcePath = path.resolve(sourcePath, file.name);
-        const newTargetPath = path.resolve(targetPath, file.name);
-        if (file.isDirectory()) {
-          isExist(newTargetPath);
-          copyFile(newSourcePath, newTargetPath);
-        }
-        fs.copyFileSync(newSourcePath, newTargetPath);
-      });
-    });
-  };
-
-  // const downLoadTemplate = (config) => {
-
-  //   return new Promise((resolve, reject) => {
-  //     // 1: ts 2: js
-  //     const downLoadUrl = {
-  //       1: "direct:https://github.com/Terrellzou/fezs-cli.git",
-  //       2: "direct:https://github.com/Terrellzou/fe-cli/tree/main/template/template-react",
-  //     };
-  //     spinner.start();
-  //     download(downLoadUrl[variant], targetFile, { clone: true }, (err) => {
-  //       if (err) {
-  //         console.log(err);
-  //         spinner.stop();
-  //         console.log(chalk.redBright("找不到模板地址"));
-  //       } else {
-  //         spinner.stop();
-  //         spinner.succeed("Loading succeed");
-  //         resolve(targetFile);
-  //       }
-  //     });
-  //   });
-  // };
-
   const createProject = () => {
     const questions = [
       // {
@@ -96,27 +70,19 @@ module.exports = async function (name, options) {
         console.log(answers);
         const { buildTool, variant } = answers;
         const buildToolMap = {
-          1: "webpack webpack-cli",
-          2: "@vite/cli",
+          1: "webpack",
+          2: "vite",
         };
-        // 远程下载模板
-        // const promise = downLoadTemplate(answers);
-        // 复制模板
-        const message = "loading template";
-        const spinner = ora(message);
         const copyPath = {
-          1: "template",
+          1: "template/template-react-ts",
           2: "template/template-react",
         };
 
-        copyFile(copyPath[variant], 'test').then(() => {
-          // spinner.start();
-          // spinner.stop();
-          // spinner.succeed("Loading succeed");
+        copyFile(copyPath[variant], name).then(() => {
           // 创建构建工具，默认是（vite)
           // 定义需要按照的依赖
           const baseDependencies = ["react", buildToolMap[buildTool]];
-          const child = spawn("pnpm", ["install"].concat(baseDependencies), {
+          const child = spawn("pnpm", ["install", "-D"].concat(baseDependencies), {
             stdio: "inherit",
           });
           // 监听执行结果
@@ -151,7 +117,7 @@ module.exports = async function (name, options) {
         console.log(e);
       });
   };
-  const isExsitFile = await fs.existsSync(targetFile);
+  const isExsitFile = fs.existsSync(targetFile);
   if (isExsitFile) {
     inquirer
       .prompt([
@@ -164,8 +130,10 @@ module.exports = async function (name, options) {
       .then((res) => {
         const { overwrite } = res;
         if (overwrite) {
-          fs.rmdirSync(targetFile);
-          createProject();
+          fs.rmdir(targetFile, () => {
+            createProject();
+          });
+          
         }
       });
   } else {

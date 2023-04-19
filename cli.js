@@ -11,7 +11,6 @@ program
     const projectName = name;
     // 当前命令行选择的目录
     create(projectName, options);
-    console.log("name:", name, "options:", options);
   });
 
 program
